@@ -49,5 +49,5 @@ def handle_message_received(entry):
     sid = event_content['sender']['id']
     message = event_content['message']
 
-    if 'text' in message.keys() and message['text'].lower().startswith('dev echo: '):
-        send_api.send_text_message(sid, f'You asked me to echo the following:\n{message["text"][10:]}')
+    if 'text' in message.keys() and message['text'].lower().startswith('dev echo '):
+        send_api.send_text_message(sid, f'You asked me to echo the following:\n{message["text"][9:]}')
