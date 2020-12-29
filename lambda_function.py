@@ -49,5 +49,17 @@ def handle_message_received(entry):
     sid = event_content['sender']['id']
     message = event_content['message']
 
-    if 'text' in message.keys() and message['text'].lower().startswith('dev echo '):
-        send_api.send_text_message(sid, f'You asked me to echo the following:\n{message["text"][9:]}')
+    if 'text' in message.keys():
+        msg_txt = message['text']
+
+        if msg_txt.lower().startswith('dev echo '):
+            send_api.send_text_message(sid, f'You asked me to echo the following:\n{message["text"][9:]}')
+            return
+
+        if 'help' in msg_txt.lower():
+            send_api.send_text_message(sid, 'I can currently understand the following messages:'
+                                            '\n  - None')
+            return
+
+        send_api.send_text_message(sid, 'I did not understand your message. You can write "help" to see what '
+                                        'messages I will understand.')
