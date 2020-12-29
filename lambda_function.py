@@ -59,6 +59,7 @@ def handle_message_received(entry):
         if 'help' in msg_txt.lower():
             send_api.send_text_message(sid, 'I can currently understand the following messages:'
                                             '\n  - None')
+            return
 
         send_api.send_text_message(sid, 'I did not understand your message. You can write "help" to see what '
                                         'messages I will understand.')
