@@ -1,7 +1,9 @@
 import os
 import json
+import re
 
 import send_api
+import database_access
 
 
 def lambda_handler(event, context):
@@ -52,14 +54,32 @@ def handle_message_received(entry):
     if 'text' in message.keys():
         msg_txt = message['text']
 
-        if msg_txt.lower().startswith('dev echo '):
-            send_api.send_text_message(sid, f'You asked me to echo the following:\n{message["text"][9:]}')
-            return
+        # Metronome
+        if 'metronome' in msg_txt.lower():
+            numeric = re.compile(r'\d+')
+            numeric_sections = numeric.findall(msg_txt)
 
-        if 'help' in msg_txt.lower():
-            send_api.send_text_message(sid, 'I can currently understand the following messages:'
-                                            '\n  - None')
-            return
+            if len(numeric_sections) != 1:
+                invalid_bpm_msg = 'Please include a single number in messages asking for a metronome to indicate bpm.'
+                send_api.send_text_message(sid, invalid_bpm_msg)
+                return
 
-        send_api.send_text_message(sid, 'I did not understand your message. You can write "help" to see what '
-                                        'messages I will understand.')
+            bpm = numeric_sections[0]
+            if 30 > bpm > 400:
+                invalid_bpm_msg = 'Please select a bpm between 30 and 400.'
+                send_api.send_text_message(sid, invalid_bpm_msg)
+                return
+
+            rounded_bpm = str(5 * round(int(bpm) / 5))
+            metronome_url = database_access.fetch_resource_url('metronome', rounded_bpm)
+
+            send_api.send_text_message(sid, f'Here is a {bpm} bpm metronome:\n{metronome_url}')
+
+        # Help
+        elif 'help' in msg_txt.lower():
+            send_api.send_text_message(sid, 'I can currently do the following:'
+                                            '\n  - Get metronomes between 30 and 400 bpm (to the nearest 5 bpm)')
+        # Not Recognised
+        else:
+            send_api.send_text_message(sid, 'I did not understand your message. You can write "help" to see what '
+                                            'messages I will understand.')
