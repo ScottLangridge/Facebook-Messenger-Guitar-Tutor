@@ -73,7 +73,7 @@ def handle_message_received(entry):
             rounded_bpm = str(5 * round(bpm / 5))
             metronome_url = database_access.fetch_resource_url('metronome', rounded_bpm)
 
-            send_api.send_text_message(sid, f'Here is a {rounded_bpm} bpm metronome:\n{metronome_url}')
+            send_api.send_text_message(sid, f'Here is a {rounded_bpm} bpm metronome:\n\n{metronome_url}')
 
         # Help
         elif 'help' in msg_txt.lower():
