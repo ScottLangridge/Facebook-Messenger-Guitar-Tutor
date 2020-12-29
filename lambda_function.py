@@ -9,15 +9,19 @@ import database_access
 def lambda_handler(event, context):
     print(f'EVENT {json.dumps(event)}')
 
-    http_verb = event['requestContext']['http']['method']
-    if http_verb == 'GET':
-        return verify_webhook(event)
-    elif http_verb == 'POST':
-        content = json.loads(event['body'])
-        for entry in content['entry']:
-            handle_entry(entry)
-        return {'statusCode': 200}
-    else:
+    try:
+        http_verb = event['requestContext']['http']['method']
+        if http_verb == 'GET':
+            return verify_webhook(event)
+        elif http_verb == 'POST':
+            content = json.loads(event['body'])
+            for entry in content['entry']:
+                handle_entry(entry)
+            return {'statusCode': 200}
+        else:
+            raise RuntimeError
+
+    except Exception:
         return {'statusCode': 500}
 
 
@@ -65,7 +69,7 @@ def handle_message_received(entry):
                 return
 
             bpm = int(numeric_sections[0])
-            if 30 > bpm > 400:
+            if not 30 <= bpm <= 400:
                 invalid_bpm_msg = 'Please select a bpm between 30 and 400.'
                 send_api.send_text_message(sid, invalid_bpm_msg)
                 return
