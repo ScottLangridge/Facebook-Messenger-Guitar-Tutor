@@ -21,7 +21,8 @@ def lambda_handler(event, context):
         else:
             raise RuntimeError
 
-    except Exception:
+    except Exception as e:
+        print('ERROR: ' + str(e))
         return {'statusCode': 500}
 
 
