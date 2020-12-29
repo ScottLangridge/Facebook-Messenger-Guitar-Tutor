@@ -9,7 +9,7 @@ def lambda_handler(event, context):
 
     http_verb = event['requestContext']['http']['method']
     if http_verb == 'GET':
-        verify_webhook(event)
+        return verify_webhook(event)
     elif http_verb == 'POST':
         content = json.loads(event['body'])
         for entry in content['entry']:
