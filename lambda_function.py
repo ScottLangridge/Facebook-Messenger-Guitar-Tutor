@@ -66,7 +66,7 @@ def handle_message_received(entry):
 
             if len(numeric_sections) != 1:
                 invalid_bpm_msg = 'Please include a single number in messages asking for a metronome to indicate bpm.' \
-                                  '\nFor example: "60 BPM metronome".'
+                                  '\n\nFor example: "60 BPM metronome".'
                 send_api.send_text_message(sid, invalid_bpm_msg)
                 return
 
